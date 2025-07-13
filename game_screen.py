@@ -17,7 +17,8 @@ from game_config import (
     BACK_LABEL,          
     DEFAULT_FONT,        
     BACK_BTN_W,          
-    BACK_BTN_H,          
+    BACK_BTN_H,  
+    SCREEN_HOME,        
 )
 
 # ------------------------------------------------------------------ #
@@ -40,6 +41,10 @@ class GameScreen(Screen):
     ):
         super().__init__(**kwargs)
 
+        def _go_home(*_):
+            from kivy.app import App
+            App.get_running_app().root.current = SCREEN_HOME
+
         # 1) Sinh layout trò chơi qua factory
         self.game_widget = create_game(
             mode,
@@ -48,24 +53,9 @@ class GameScreen(Screen):
             cols=cols,
             win_len=win_len,
             num_obstacles=num_obstacles,
+            back_cb=_go_home,
         )
         self.add_widget(self.game_widget)
-
-        # 2) Tạo nút Back‑to‑Menu (đồng bộ UI)
-        back_btn = Button(
-            text=f"[b]{BACK_LABEL}[/b]",  # Dùng markup để in đậm
-            markup=True,
-            font_name=DEFAULT_FONT,
-            size_hint=(None, None),
-            width=BACK_BTN_W,
-            height=BACK_BTN_H,
-            pos_hint={"x": 0.02, "top": 0.98},
-        )
-        style_round_button(back_btn, rgba=BTN_RGBA)   # Bo góc + màu
-        enable_press_darken(back_btn, factor=0.5)     # Tối màu khi nhấn
-        enable_click_sound(back_btn)                  # Âm thanh click
-        back_btn.bind(on_release=lambda *_: App.get_running_app().go_home())
-        self.add_widget(back_btn)
 
     # ----------------------- PUBLIC METHOD ---------------------------
     def apply_theme(self, theme):

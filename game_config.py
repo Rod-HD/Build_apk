@@ -54,8 +54,8 @@ NAMES_THEMES = [
 ]
 BG_THEME       = "bg.png"
 CELL_THEME     = "cell.png"
-X_THEME        = "x.png"
-O_THEME        = "o.png"
+X_THEME        = "X.png"
+O_THEME        = "O.png"
 OBSTACLE_THEME = "obstacle.png"
 ASSETS         = "assets"
 

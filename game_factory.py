@@ -3,7 +3,7 @@ from game_controller import GameController
 from themes import Theme
 from layout import TicTacToeLayout
 from game_config import DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_WIN_LEN, DEFAULT_NUM_OBSTACLES
-
+from typing import Callable, Optional
 """
 Tạo instance trò chơi hoàn chỉnh
 =======================================================
@@ -20,11 +20,12 @@ def create_game(mode       : str = "friend",
                 rows       : int = DEFAULT_ROWS,
                 cols       : int = DEFAULT_COLS,
                 win_len    : int = DEFAULT_WIN_LEN,
-                num_obstacles: int = DEFAULT_NUM_OBSTACLES) -> TicTacToeLayout:
+                num_obstacles: int = DEFAULT_NUM_OBSTACLES,
+                back_cb    : Optional[Callable[..., None]] = None) -> TicTacToeLayout:
 
     board      = Board(rows=rows, cols=cols, win_len=win_len, num_obstacles=num_obstacles)
     controller = GameController(board, mode, difficulty)
     Theme.reset()
     theme = Theme.current()
     #theme      = Theme(element)
-    return TicTacToeLayout(controller, theme)
+    return TicTacToeLayout(controller, theme, back_cb)

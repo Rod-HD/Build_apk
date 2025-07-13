@@ -51,7 +51,10 @@ class TicTacToeLayout(FloatLayout):
             self.bind(size=self._fit)
 
         def _fit(self, *_):
-            self.text_size = (self.width - 20, None)
+            margin   = 0.90
+            shortest = min(self.width, self.height)
+            self.font_size = shortest * 0.32        
+            self.text_size = (self.width * margin, None)
 
     # ------------------ BUTTON CỤ THỂ (INNER CLASS) -----------------
     class _RestartBtn(_BaseBtn):
@@ -74,8 +77,14 @@ class TicTacToeLayout(FloatLayout):
                              on_release=lambda *_: cb())
             self.disabled, self.opacity = True, DIM_ALPHA
 
+    class _BackBtn(_BaseBtn):
+        def __init__(self, cb):
+            super().__init__("[b]Back\nto Menu[/b]", BTN_RGBA,
+                            pos_hint={"x": 0.02, "top": 0.98},
+                            on_release=lambda *_: cb())
+
     # --------------------------- KHỞI TẠO ----------------------------
-    def __init__(self, controller: GameController, theme: Theme, **kw):
+    def __init__(self, controller: GameController, theme: Theme,back_cb, **kw):
         super().__init__(**kw)
         self._controller, self._board = controller, controller._board
         self._state = GameState.IN_PROGRESS
@@ -115,6 +124,8 @@ class TicTacToeLayout(FloatLayout):
         self._restart_btn = self._RestartBtn(self._restart_game); self.add_widget(self._restart_btn)
         self._shuffle_btn = self._ShuffleBtn(self._shuffle_obstacles); self.add_widget(self._shuffle_btn)
         self._undo_btn   = self._UndoBtn(self._undo_move);   self.add_widget(self._undo_btn)
+        self._back_btn    = self._BackBtn(back_cb)                 # dùng callback truyền vào
+        self.add_widget(self._back_btn)
 
         # --- Geometry ---------------------------------------------
         Window.bind(on_resize=lambda *_: self._update_geometry())
@@ -213,9 +224,17 @@ class TicTacToeLayout(FloatLayout):
     # ------------------------------------------------------------------ #
     def _update_geometry(self, *_):
         win_w, win_h = Window.size
-        side = min(win_w, win_h)               
+        side = min(win_w, win_h)
         x = (win_w - side) / 2
         y = (win_h - side) / 2
         self._frame.size, self._frame.pos = (side, side), (x, y)
+
+        btn_w = max(side * 0.24, 120)
+        btn_h = max(side * 0.10,  48)
+        for btn in (self._restart_btn,
+            self._shuffle_btn,
+            self._undo_btn,
+            self._back_btn):
+            btn.size = (btn_w, btn_h)
 
     def _sync_bg(self, *_): self._bg.pos, self._bg.size = self.pos, self.size
