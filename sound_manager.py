@@ -34,6 +34,12 @@ class SoundManager:
         if self.click:
             self.click.stop()  
             self.click.play()
+    
+    def stop_bg(self):
+        """Dừng nhạc nền và tua về đầu (chuẩn bị cho lần phát sau)."""
+        if self.bg:
+            self.bg.stop()
+            self.bg.seek(0)
 
     # ----------------------- HELPER STATIC ---------------------------
     @staticmethod

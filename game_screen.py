@@ -42,9 +42,11 @@ class GameScreen(Screen):
         super().__init__(**kwargs)
 
         def _go_home(*_):
-            from kivy.app import App
+             # dừng nhạc trước khi về menu
+            if hasattr(self.game_widget, "_sounds"):
+                self.game_widget._sounds.stop_bg()
             App.get_running_app().root.current = SCREEN_HOME
-
+            
         # 1) Sinh layout trò chơi qua factory
         self.game_widget = create_game(
             mode,
